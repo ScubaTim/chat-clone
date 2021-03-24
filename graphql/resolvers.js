@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { UserInputError, AuthenticationError } = require('apollo-server')
 const jwt = require('jsonwebtoken')
+const { Op } = require('sequelize')
 
 const { JWT_SECRET } = require('../config/env.json')
 const { User } = require('../models')
@@ -9,24 +10,27 @@ const { User } = require('../models')
 module.exports = {
     Query: {
         getUsers: async (_, __, context) => {
-            let user
-
-            if (context.req && context.req.headers.authorization) {
-                const token = context.req.headers.authorization.split('Bearer ')[1]
-                jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
-                    if (err) {
-                        throw new AuthenticationError('Unauthenticated')
-                    }
-                    user = decodedToken
-                    console.log('consoleLog user', user)
-                })
-            }
-
             try {
-                const users = await User.findAll()
+                let user
+
+                if (context.req && context.req.headers.authorization) {
+                    const token = context.req.headers.authorization.split('Bearer ')[1]
+                    jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
+                        if (err) {
+                            throw new AuthenticationError('Unauthenticated')
+                        }
+                        user = decodedToken
+                    })
+                }
+
+                const users = await User.findAll({
+                    where: { username: { [Op.ne]: user.username } }
+                })
+
                 return users
             } catch (err) {
                 console.log('err getting user', err)
+                throw err
             }
         },
         login: async (_, args) => {
@@ -60,7 +64,7 @@ module.exports = {
                 return {
                     ...user.toJSON(),
                     createdAt: user.createdAt.toISOString(),
-                    token
+                    token,
                 }
             } catch (err) {
                 console.log(err)
