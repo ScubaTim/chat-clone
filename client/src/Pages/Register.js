@@ -17,7 +17,7 @@ export default function Register() {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
 
-    const [registerUser, { loading }] = useMutation(REGISTER_USER, {
+    const [registerUser, { data }] = useMutation(REGISTER_USER, {
         update(_, res) {
             console.log(res)
         }, onError(err) {
@@ -25,6 +25,7 @@ export default function Register() {
         }
     });
 
+    console.log(data)
 
     let userInfo = {}
 
@@ -37,7 +38,7 @@ export default function Register() {
             password,
             confirmPassword
         }
-
+        console.log('userinfo', userInfo)
         registerUser({ userInfo })
     }
 
