@@ -18,12 +18,14 @@ export default function Register() {
         password: '',
         confirmPassword: '',
     })
+    const [errors, setErrors] = useState({})
 
-    const [registerUser, { data }] = useMutation(REGISTER_USER, {
+    const [registerUser, { loading }] = useMutation(REGISTER_USER, {
         update(_, res) {
             console.log(res)
         }, onError(err) {
-            console.log(err)
+            console.log(err.graphQLErrors[0].extensions.errors)
+            setErrors(err.graphQLErrors[0].extensions.errors)
         }
     });
 
@@ -41,40 +43,46 @@ export default function Register() {
                     <hr />
                     <Form onSubmit={submitRegisterForm}>
                         <Form.Group>
-                            <Form.Label>Username</Form.Label>
+                            <Form.Label className={errors.username && 'text-danger'}>{errors.username ?? 'Username'}</Form.Label>
                             <Form.Control
                                 type="text"
                                 placeholder="Enter username"
+                                className={errors.username && 'is invalid'}
                                 value={variables.username}
                                 onChange={(e) => setVariables({ ...variables, username: e.target.value })}
                             />
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Email Address</Form.Label>
+                            <Form.Label className={errors.email && 'text-danger'}>{errors.email ?? 'Email Address'}</Form.Label>
                             <Form.Control
                                 type="email"
                                 placeholder="Enter email"
+                                className={errors.email ?? 'is invalid'}
                                 value={variables.email}
                                 onChange={(e) => setVariables({ ...variables, email: e.target.value })} />
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Password</Form.Label>
+                            <Form.Label className={errors.password && 'text-danger'}>{errors.password ?? 'Password'}</Form.Label>
                             <Form.Control
                                 type="password"
                                 placeholder="Password"
+                                className={errors.password && 'is invalid'}
                                 value={variables.password}
                                 onChange={(e) => setVariables({ ...variables, password: e.target.value })} />
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Confirm Password</Form.Label>
+                            <Form.Label className={errors.confirmPassword && 'text-danger'}>{errors.confirmPassword ?? 'Confirm Password'}</Form.Label>
                             <Form.Control
                                 type="password"
                                 placeholder="Confirm Password"
+                                className={errors.confirmPassword && 'is invalid'}
                                 value={variables.confirmPassword}
                                 onChange={(e) => setVariables({ ...variables, confirmPassword: e.target.value })} />
                         </Form.Group>
                         <div className="text-center">
-                            <Button className="mt-4" variant="success" type="submit" block>Register</Button>
+                            <Button className="mt-4" variant="success" type="submit" block disabled={loading}>
+                                {loading ? 'Loading..' : 'Register'}
+                            </Button>
                         </div>
                     </Form>
                 </Card>
