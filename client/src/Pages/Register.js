@@ -12,10 +12,12 @@ const REGISTER_USER = gql`
 
 
 export default function Register() {
-    const [username, setUsername] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
+    const [variables, setVariables] = useState({
+        email: '',
+        username: '',
+        password: '',
+        confirmPassword: '',
+    })
 
     const [registerUser, { data }] = useMutation(REGISTER_USER, {
         update(_, res) {
@@ -25,21 +27,10 @@ export default function Register() {
         }
     });
 
-    console.log(data)
-
-    let userInfo = {}
-
     const submitRegisterForm = (e) => {
         e.preventDefault()
 
-        userInfo = {
-            username,
-            email,
-            password,
-            confirmPassword
-        }
-        console.log('userinfo', userInfo)
-        registerUser({ userInfo })
+        registerUser({ variables })
     }
 
     return (
@@ -51,19 +42,36 @@ export default function Register() {
                     <Form onSubmit={submitRegisterForm}>
                         <Form.Group>
                             <Form.Label>Username</Form.Label>
-                            <Form.Control type="text" placeholder="Enter username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                            <Form.Control
+                                type="text"
+                                placeholder="Enter username"
+                                value={variables.username}
+                                onChange={(e) => setVariables({ ...variables, username: e.target.value })}
+                            />
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Email Address</Form.Label>
-                            <Form.Control type="email" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                            <Form.Control
+                                type="email"
+                                placeholder="Enter email"
+                                value={variables.email}
+                                onChange={(e) => setVariables({ ...variables, email: e.target.value })} />
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                            <Form.Control
+                                type="password"
+                                placeholder="Password"
+                                value={variables.password}
+                                onChange={(e) => setVariables({ ...variables, password: e.target.value })} />
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Confirm Password</Form.Label>
-                            <Form.Control type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                            <Form.Control
+                                type="password"
+                                placeholder="Confirm Password"
+                                value={variables.confirmPassword}
+                                onChange={(e) => setVariables({ ...variables, confirmPassword: e.target.value })} />
                         </Form.Group>
                         <div className="text-center">
                             <Button className="mt-4" variant="success" type="submit" block>Register</Button>
