@@ -1,19 +1,29 @@
 import React, { useState } from 'react'
 import { Row, Col, Form, Button, Card } from 'react-bootstrap'
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client'
+import { Link } from 'react-router-dom'
 
 const REGISTER_USER = gql`
-  mutation register($username: String! $email: String! $password: String! $confirmPassword: String!) {
-    register(username: $username email: $email password: $password confirmPassword: $confirmPassword) {
-      username 
-      email 
-      createdAt
+    mutation register(
+        $username: String! 
+        $email: String! 
+        $password: String! 
+        $confirmPassword: String!
+    ) {
+        register(
+            username: $username 
+            email: $email 
+            password: $password 
+            confirmPassword: $confirmPassword
+        ) {
+            username 
+            email 
+            createdAt
+        }
     }
-  }
 `
 
-
-export default function Register() {
+export default function Register(props) {
     const [variables, setVariables] = useState({
         email: '',
         username: '',
@@ -24,8 +34,8 @@ export default function Register() {
     const [errors, setErrors] = useState({})
 
     const [registerUser, { loading }] = useMutation(REGISTER_USER, {
-        update(_, res) {
-            console.log(res)
+        update(_, __) {
+            props.history.push('/login')
         }, onError(err) {
             console.log(err.graphQLErrors[0].extensions.errors)
             setErrors(err.graphQLErrors[0].extensions.errors)
@@ -85,6 +95,8 @@ export default function Register() {
                             <Button className="mt-4" variant="success" type="submit" block disabled={loading}>
                                 {loading ? 'Loading..' : 'Register'}
                             </Button>
+                            <small className="text-muted">Already have an account? <Link to="/login">Login</Link></small>
+
                         </div>
                     </Form>
                 </Card>
