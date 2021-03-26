@@ -5,10 +5,12 @@ import { gql, useMutation } from '@apollo/client';
 const REGISTER_USER = gql`
   mutation register($username: String! $email: String! $password: String! $confirmPassword: String!) {
     register(username: $username email: $email password: $password confirmPassword: $confirmPassword) {
-      username email createdAt
+      username 
+      email 
+      createdAt
     }
   }
-`;
+`
 
 
 export default function Register() {
@@ -18,6 +20,7 @@ export default function Register() {
         password: '',
         confirmPassword: '',
     })
+
     const [errors, setErrors] = useState({})
 
     const [registerUser, { loading }] = useMutation(REGISTER_USER, {
@@ -27,11 +30,10 @@ export default function Register() {
             console.log(err.graphQLErrors[0].extensions.errors)
             setErrors(err.graphQLErrors[0].extensions.errors)
         }
-    });
+    })
 
     const submitRegisterForm = (e) => {
         e.preventDefault()
-
         registerUser({ variables })
     }
 
@@ -47,7 +49,7 @@ export default function Register() {
                             <Form.Control
                                 type="text"
                                 placeholder="Enter username"
-                                className={errors.username && 'is invalid'}
+                                className={errors.username && 'is-invalid'}
                                 value={variables.username}
                                 onChange={(e) => setVariables({ ...variables, username: e.target.value })}
                             />
@@ -57,7 +59,7 @@ export default function Register() {
                             <Form.Control
                                 type="email"
                                 placeholder="Enter email"
-                                className={errors.email ?? 'is invalid'}
+                                className={errors.email && 'is-invalid'}
                                 value={variables.email}
                                 onChange={(e) => setVariables({ ...variables, email: e.target.value })} />
                         </Form.Group>
@@ -66,7 +68,7 @@ export default function Register() {
                             <Form.Control
                                 type="password"
                                 placeholder="Password"
-                                className={errors.password && 'is invalid'}
+                                className={errors.password && 'is-invalid'}
                                 value={variables.password}
                                 onChange={(e) => setVariables({ ...variables, password: e.target.value })} />
                         </Form.Group>
@@ -75,7 +77,7 @@ export default function Register() {
                             <Form.Control
                                 type="password"
                                 placeholder="Confirm Password"
-                                className={errors.confirmPassword && 'is invalid'}
+                                className={errors.confirmPassword && 'is-invalid'}
                                 value={variables.confirmPassword}
                                 onChange={(e) => setVariables({ ...variables, confirmPassword: e.target.value })} />
                         </Form.Group>

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Container } from 'react-bootstrap'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
 import ApolloProvider from './ApolloProvider'
 
@@ -12,9 +13,11 @@ function App() {
 
   return (
     <ApolloProvider>
-      <Container>
-        <Register />
-      </Container>
+      <BrowserRouter>
+        <Container>
+          <Route path="/register" component={Register} />
+        </Container>
+      </BrowserRouter>
     </ApolloProvider>
 
   );

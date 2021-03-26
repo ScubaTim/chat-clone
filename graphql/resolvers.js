@@ -84,12 +84,6 @@ module.exports = {
                 if (confirmPassword.trim() === '') errors.confirmPassword = 'Repeat password must not be empty'
                 if (password !== confirmPassword) errors.confirmPassword = 'Password must match'
 
-                // const userByUsername = await User.findOne({ where: { username } })
-                // const userByEmail = await User.findOne({ where: { email } })
-
-                // if (userByUsername) errors.username = 'Username is taken'
-                // if (userByEmail) errors.email = 'Email is already taken'
-
                 if (Object.keys(errors).length > 0) {
                     throw errors;
                 }
