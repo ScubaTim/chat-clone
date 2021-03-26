@@ -11,17 +11,7 @@ module.exports = {
     Query: {
         getUsers: async (_, __, context) => {
             try {
-                let user
-
-                if (context.req && context.req.headers.authorization) {
-                    const token = context.req.headers.authorization.split('Bearer ')[1]
-                    jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
-                        if (err) {
-                            throw new AuthenticationError('Unauthenticated')
-                        }
-                        user = decodedToken
-                    })
-                }
+                if (!user) throw AuthenticationError('Unauthenticated')
 
                 const users = await User.findAll({
                     where: { username: { [Op.ne]: user.username } }
@@ -104,6 +94,14 @@ module.exports = {
                     err.errors.forEach(e => errors[e.path] = e.message)
                 }
                 throw new UserInputError('Bad Input', { errors })
+            }
+        },
+        sendMessage: async (parent, args, context) => {
+            try {
+
+            } catch (err) {
+                console.log(err)
+                throw err
             }
         }
     }
