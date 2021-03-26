@@ -92,11 +92,10 @@ export default function Register(props) {
                                 onChange={(e) => setVariables({ ...variables, confirmPassword: e.target.value })} />
                         </Form.Group>
                         <div className="text-center">
-                            <Button className="mt-4" variant="success" type="submit" block disabled={loading}>
+                            <Button className="mt-4 mb-2" variant="success" type="submit" block disabled={loading}>
                                 {loading ? 'Loading..' : 'Register'}
                             </Button>
                             <small className="text-muted">Already have an account? <Link to="/login">Login</Link></small>
-
                         </div>
                     </Form>
                 </Card>

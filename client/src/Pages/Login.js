@@ -13,7 +13,6 @@ const LOGIN_USER = gql`
           password: $password
       ) {
       username 
-      email
       createdAt
       token
     }
@@ -62,15 +61,6 @@ export default function Login(props) {
                             />
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label className={errors.email && 'text-danger'}>{errors.email ?? 'Email Address'}</Form.Label>
-                            <Form.Control
-                                type="email"
-                                placeholder="Enter email"
-                                className={errors.email && 'is-invalid'}
-                                value={variables.email}
-                                onChange={(e) => setVariables({ ...variables, email: e.target.value })} />
-                        </Form.Group>
-                        <Form.Group>
                             <Form.Label className={errors.password && 'text-danger'}>{errors.password ?? 'Password'}</Form.Label>
                             <Form.Control
                                 type="password"
@@ -80,7 +70,7 @@ export default function Login(props) {
                                 onChange={(e) => setVariables({ ...variables, password: e.target.value })} />
                         </Form.Group>
                         <div className="text-center">
-                            <Button className="mt-4" variant="success" type="submit" block disabled={loading}>
+                            <Button className="mt-4 mb-2" variant="success" type="submit" block disabled={loading}>
                                 {loading ? 'Loading..' : 'Login'}
                             </Button>
                             <small className="text-muted">Don't have an account? <Link to="/register">Register</Link></small>
