@@ -13,6 +13,7 @@ type Message {
   content: String!,
   from: String!,
   to: String!,
+  createdAt: String!
 }
 
 type Query {

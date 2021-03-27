@@ -4,17 +4,17 @@ const jwt = require('jsonwebtoken')
 const { Op } = require('sequelize')
 
 const { JWT_SECRET } = require('../config/env.json')
-const { User } = require('../models')
+const { Message, User } = require('../models')
 
 
 module.exports = {
     Query: {
-        getUsers: async (_, __, context) => {
+        getUsers: async (_, __, { user }) => {
             try {
-                if (!user) throw AuthenticationError('Unauthenticated')
+                if (!user) throw new AuthenticationError('Unauthenticated')
 
                 const users = await User.findAll({
-                    where: { username: { [Op.ne]: user.username } }
+                    where: { username: { [Op.ne]: user.username } },
                 })
 
                 return users
@@ -96,9 +96,27 @@ module.exports = {
                 throw new UserInputError('Bad Input', { errors })
             }
         },
-        sendMessage: async (parent, args, context) => {
+        sendMessage: async (parent, { to, content }, { user }) => {
             try {
+                if (!user) throw new AuthenticationError('Unauthenticated')
 
+                const recipient = await User.findOne({ where: { username: to } })
+
+                if (!recipient) {
+                    throw new UserInputError('User not found')
+                }
+
+                if (content.trim() === '') {
+                    throw new UserInputError('Message is empty')
+                }
+
+                const message = await Message.create({
+                    from: user.username,
+                    to,
+                    content,
+                })
+
+                return message
             } catch (err) {
                 console.log(err)
                 throw err
