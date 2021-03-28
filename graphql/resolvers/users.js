@@ -3,8 +3,8 @@ const { UserInputError, AuthenticationError } = require('apollo-server')
 const jwt = require('jsonwebtoken')
 const { Op } = require('sequelize')
 
-const { JWT_SECRET } = require('../config/env.json')
-const { Message, User } = require('../models')
+const { JWT_SECRET } = require('../../config/env.json')
+const { User } = require('../../models')
 
 
 module.exports = {
@@ -28,8 +28,8 @@ module.exports = {
             let errors = {}
 
             try {
-                if (username.trim() === '') errors.username = 'username must not be empty'
-                if (password.trim() === '') errors.password = 'password must not be empty'
+                if (username.trim() === '') errors.username = 'Username must not be empty'
+                if (password.trim() === '') errors.password = 'Password must not be empty'
 
                 if (Object.keys(errors).length > 0) {
                     throw new UserInputError('bad input', { errors })
@@ -38,15 +38,15 @@ module.exports = {
                 const user = await User.findOne({ where: { username } })
 
                 if (!user) {
-                    errors.username = 'user not found'
-                    throw new UserInputError('user not found', { errors })
+                    errors.username = 'User not found'
+                    throw new UserInputError('User not found', { errors })
                 }
 
                 const correctPassword = await bcrypt.compare(password, user.password)
 
                 if (!correctPassword) {
-                    errors.password = 'password is not correct'
-                    throw new UserInputError('password is incorrect', { errors })
+                    errors.password = 'Password is not correct'
+                    throw new UserInputError('Password is incorrect', { errors })
                 }
 
                 const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: 60 * 60 })
@@ -71,7 +71,7 @@ module.exports = {
                 if (email.trim() === '') errors.email = 'Email must not  be empty'
                 if (username.trim() === '') errors.username = 'Username must not  be empty'
                 if (password.trim() === '') errors.password = 'Password must not  be empty'
-                if (confirmPassword.trim() === '') errors.confirmPassword = 'Repeat password must not be empty'
+                if (confirmPassword.trim() === '') errors.confirmPassword = 'Password must not be empty'
                 if (password !== confirmPassword) errors.confirmPassword = 'Password must match'
 
                 if (Object.keys(errors).length > 0) {
@@ -96,31 +96,6 @@ module.exports = {
                 throw new UserInputError('Bad Input', { errors })
             }
         },
-        sendMessage: async (parent, { to, content }, { user }) => {
-            try {
-                if (!user) throw new AuthenticationError('Unauthenticated')
 
-                const recipient = await User.findOne({ where: { username: to } })
-
-                if (!recipient) {
-                    throw new UserInputError('User not found')
-                }
-
-                if (content.trim() === '') {
-                    throw new UserInputError('Message is empty')
-                }
-
-                const message = await Message.create({
-                    from: user.username,
-                    to,
-                    content,
-                })
-
-                return message
-            } catch (err) {
-                console.log(err)
-                throw err
-            }
-        }
     }
 };
