@@ -10,21 +10,24 @@ import Home from './Pages/Home'
 import Register from './Pages/Register'
 import Login from './Pages/Login'
 
+import { AuthProvider } from './context/auth'
 
 function App() {
 
 
   return (
     <ApolloProvider>
-      <BrowserRouter>
-        <Container>
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route path="/register" component={Register} />
-            <Route path="/login" component={Login} />
-          </Switch>
-        </Container>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Container>
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/register" component={Register} />
+              <Route path="/login" component={Login} />
+            </Switch>
+          </Container>
+        </BrowserRouter>
+      </AuthProvider>
     </ApolloProvider>
 
   );
